@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metodo Universitario - Opzioni di Pagamento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #ffffff;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-top: 4px;
+    }
+
+    .header img {
+      height: 44px;
+      margin-bottom: 0;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    /* SELECTOR */
+    .selector-wrapper {
+      background: #f7faff;
+      border: 2px solid #e0edff;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+    }
+
+    .selector-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #0A82EF;
+      margin-bottom: 8px;
+    }
+
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select select {
+      width: 100%;
+      padding: 12px 44px 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      border: 2px solid #d0e3ff;
+      border-radius: 10px;
+      background: #fff;
+      color: #000807;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .custom-select select:focus {
+      outline: none;
+      border-color: #0A82EF;
+      box-shadow: 0 0 0 3px rgba(10, 130, 239, 0.15);
+    }
+
+    .custom-select::after {
+      content: '';
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 7px solid #0A82EF;
+      pointer-events: none;
+    }
+
+    /* RESULTS */
+    .results {
+      display: none;
+      animation: slideUp 0.3s ease;
+    }
+    .results.visible { display: block; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PRODUCT HERO - compact */
+    .product-hero {
+      background: linear-gradient(135deg, #0A82EF 0%, #065fb5 100%);
+      border-radius: 14px;
+      padding: 16px 20px;
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -20px;
+      width: 110px; height: 110px;
+      background: rgba(255, 203, 3, 0.2);
+      border-radius: 50%;
+    }
+
+    .product-name {
+      font-size: 22px;
+      font-weight: 900;
+      position: relative;
+      z-index: 1;
+    }
+
+    .product-tagline {
+      font-size: 12px;
+      opacity: 0.9;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* PRICE SUMMARY ROW */
+    .price-summary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .price-box {
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 2px solid #f0f0f0;
+    }
+
+    .price-box.listino {
+      background: #fffdf5;
+      border-color: #ffe9a0;
+    }
+
+    .price-box.scontato {
+      background: #f2fff7;
+      border-color: #00CC66;
+    }
+
+    .price-box-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .price-box.listino .price-box-label { color: #996e00; }
+    .price-box.scontato .price-box-label { color: #008040; }
+
+    .price-box-value {
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .price-box.listino .price-box-value { color: #665500; }
+    .price-box.scontato .price-box-value { color: #006030; }
+
+    .price-box-value .curr {
+      font-size: 14px;
+      font-weight: 700;
+      vertical-align: super;
+      margin-right: 1px;
+    }
+
+    .price-box-sub {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 3px;
+    }
+
+    .price-box.listino .price-box-sub { color: #aa8800; }
+
+    .savings-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #d4fce4;
+      color: #008040;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 50px;
+      margin-top: 4px;
+    }
+
+    /* RATE TABLE */
+    .rate-section {
+      background: #f7faff;
+      border: 2px solid #d0e3ff;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .rate-section-header {
+      background: #0A82EF;
+      color: #fff;
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .rate-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .rate-table th {
+      background: #edf4ff;
+      padding: 8px 16px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #0A82EF;
+      text-align: left;
+      border-bottom: 2px solid #d0e3ff;
+    }
+
+    .rate-table th:last-child {
+      text-align: right;
+    }
+
+    .rate-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #e8f0ff;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .rate-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rate-table tr:hover {
+      background: #edf4ff;
+    }
+
+    .rate-table .rate-badge {
+      display: inline-block;
+      background: #0A82EF;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 50px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .rate-table .mensile {
+      font-size: 18px;
+      font-weight: 900;
+      color: #000807;
+    }
+
+    .rate-table .mensile-label {
+      font-size: 11px;
+      color: #0A82EF;
+      font-weight: 600;
+    }
+
+    .rate-table .totale-col {
+      text-align: right;
+      font-size: 13px;
+      color: #888;
+      font-weight: 500;
+    }
+
+    .rate-gratis {
+      display: inline-block;
+      background: #00CC66;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 50px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* FOOTER */
+    .footer-note {
+      text-align: center;
+      margin-top: 12px;
+      padding: 8px;
+      color: #bbb;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="header">
+      <img src="logo.png" alt="Metodo Universitario">
+    </div>
+
+    <div class="selector-wrapper">
+      <div class="selector-label">Seleziona il prodotto</div>
+      <div class="custom-select">
+        <select id="productSelect" onchange="showProduct()">
+          <option value="">-- Scegli un prodotto --</option>
+          <option value="mu">Memoria Universitaria</option>
+          <option value="mu_plus">Memoria Universitaria +</option>
+          <option value="mu_plus_plus">Memoria Universitaria ++</option>
+          <option value="lf">Laurea Facile</option>
+          <option value="slamp">Master SLAMP</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="results" id="results"></div>
+
+    <div class="footer-note" id="footer" style="display:none;">
+      I prezzi a rate includono gli interessi del finanziamento.<br>
+      Per maggiori dettagli, contatta il team Metodo Universitario.
+    </div>
+
+  </div>
+
+<script>
+const products = {
+  slamp: {
+    name: "Master SLAMP",
+    tagline: "Il percorso completo per la tua laurea",
+    prezzo_ufficiale: 5445,
+    prezzo_scontato: 2997,
+    rate: [
+      { num: 3, totale: 3440 },
+      { num: 6, totale: 3556.52 },
+      { num: 9, totale: 3627.56 },
+      { num: 12, totale: 3693.80 },
+      { num: 18, totale: 3846.62 },
+      { num: 24, totale: 3997.28 }
+    ]
+  },
+  lf: {
+    name: "Laurea Facile",
+    tagline: "Il metodo per laurearsi senza stress",
+    prezzo_ufficiale: 4445,
+    prezzo_scontato: 1997,
+    rate: [
+      { num: 3, totale: 2300 },
+      { num: 6, totale: 2378.78 },
+      { num: 9, totale: 2426.90 },
+      { num: 12, totale: 2471.72 },
+      { num: 18, totale: 2575.04 },
+      { num: 24, totale: 2676.80 }
+    ]
+  },
+  mu: {
+    name: "Memoria Universitaria",
+    tagline: "Potenzia la tua memoria per lo studio",
+    prezzo_ufficiale: 1000,
+    prezzo_scontato: 697,
+    rate: [
+      { num: 3, totale: 850 },
+      { num: 6, totale: 879.10 },
+      { num: 9, totale: 896.80 }
+    ]
+  },
+  mu_plus: {
+    name: "Memoria Universitaria +",
+    tagline: "Memoria avanzata con supporto extra",
+    prezzo_ufficiale: 1400,
+    prezzo_scontato: 897,
+    rate: [
+      { num: 3, totale: 1100 },
+      { num: 6, totale: 1137.68 },
+      { num: 9, totale: 1160.66 }
+    ]
+  },
+  mu_plus_plus: {
+    name: "Memoria Universitaria ++",
+    tagline: "Il pacchetto memoria definitivo",
+    prezzo_ufficiale: 1800,
+    prezzo_scontato: 1194,
+    rate: [
+      { num: 3, totale: 1500 },
+      { num: 6, totale: 1551.36 },
+      { num: 9, totale: 1582.71 }
+    ]
+  }
+};
+
+function fmt(n) {
+  return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function showProduct() {
+  const key = document.getElementById('productSelect').value;
+  const container = document.getElementById('results');
+  const footer = document.getElementById('footer');
+
+  if (!key) {
+    container.classList.remove('visible');
+    footer.style.display = 'none';
+    return;
+  }
+
+  const p = products[key];
+  const risparmio = p.prezzo_ufficiale - p.prezzo_scontato;
+
+  let rateRows = '';
+  p.rate.forEach(r => {
+    const mensile = r.totale / r.num;
+    rateRows += `
+      <tr>
+        <td><span class="rate-badge">${r.num} rate</span></td>
+        <td><span class="mensile">&euro; ${fmt(mensile)}</span> <span class="mensile-label">/mese</span></td>
+        <td class="totale-col">&euro; ${fmt(r.totale)}</td>
+      </tr>
+    `;
+  });
+
+  container.innerHTML = `
+    <div class="product-hero">
+      <div class="product-name">${p.name}</div>
+      <div class="product-tagline">${p.tagline}</div>
+    </div>
+
+    <div class="price-summary">
+      <div class="price-box listino">
+        <div class="price-box-label">Prezzo di listino</div>
+        <div class="price-box-value"><span class="curr">&euro;</span>${fmt(p.prezzo_ufficiale)}</div>
+        <div class="price-box-sub">Prezzo ufficiale</div>
+      </div>
+      <div class="price-box scontato">
+        <div class="price-box-label">\u2B50 Unica soluzione</div>
+        <div class="price-box-value"><span class="curr">&euro;</span>${fmt(p.prezzo_scontato)}</div>
+        <div class="savings-inline">\u2714 Risparmi &euro; ${fmt(risparmio)}</div>
+      </div>
+    </div>
+
+    <div class="rate-section">
+      <div class="rate-section-header">\u{1F4C5} Opzioni a rate</div>
+      <table class="rate-table">
+        <thead>
+          <tr>
+            <th>Durata</th>
+            <th>Rata mensile</th>
+            <th style="text-align:right">Totale</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rateRows}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  container.classList.add('visible');
+  footer.style.display = 'block';
+}
+</script>
+
+</body>
+</html>
