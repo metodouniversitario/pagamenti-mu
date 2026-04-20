@@ -342,6 +342,7 @@
           <option value="ocme">OCME</option>
           <option value="lf">Laurea Facile</option>
           <option value="slamp">Master SLAMP</option>
+          <option value="coaching">Coaching</option>
         </select>
       </div>
     </div>
@@ -413,6 +414,21 @@ const products = {
       { num: 9, totale: 1257.45 }
     ]
   },
+  coaching: {
+    name: "Coaching",
+    tagline: "Il percorso di coaching personalizzato",
+    prezzo_ufficiale: 1500,
+    prezzo_scontato: 1000,
+    hide_listino: true,
+    rate: [
+      { num: 3, totale: 1000, gratis: true },
+      { num: 6, totale: 1034.26 },
+      { num: 9, totale: 1055.17 },
+      { num: 12, totale: 1074.64 },
+      { num: 18, totale: 1119.52 },
+      { num: 24, totale: 1163.92 }
+    ]
+  },
   ocme: {
     name: "OCME",
     tagline: "Organizzazione Completa del Metodo Efficace",
@@ -449,11 +465,15 @@ function showProduct() {
   let rateRows = '';
   p.rate.forEach(r => {
     const mensile = r.totale / r.num;
+    const gratisBadge = r.gratis ? `<span class="rate-gratis">Completamente gratis!</span>` : '';
+    const totaleCol = r.gratis
+      ? `<td class="totale-col">&euro; ${fmt(r.totale)} ${gratisBadge}</td>`
+      : `<td class="totale-col">&euro; ${fmt(r.totale)}</td>`;
     rateRows += `
       <tr>
         <td><span class="rate-badge">${r.num} rate</span></td>
         <td><span class="mensile">&euro; ${fmt(mensile)}</span> <span class="mensile-label">/mese</span></td>
-        <td class="totale-col">&euro; ${fmt(r.totale)}</td>
+        ${totaleCol}
       </tr>
     `;
   });
@@ -463,16 +483,17 @@ function showProduct() {
       <div class="product-name">${p.name}</div>
     </div>
 
-    <div class="price-summary">
+    <div class="price-summary" style="${p.hide_listino ? 'grid-template-columns: 1fr;' : ''}">
+      ${p.hide_listino ? '' : `
       <div class="price-box listino">
         <div class="price-box-label">Prezzo di listino</div>
         <div class="price-box-value"><span class="curr">&euro;</span>${fmt(p.prezzo_ufficiale)}</div>
         <div class="price-box-sub">Prezzo ufficiale</div>
-      </div>
+      </div>`}
       <div class="price-box scontato">
         <div class="price-box-label">\u2B50 Unica soluzione in offerta</div>
         <div class="price-box-value"><span class="curr">&euro;</span>${fmt(p.prezzo_scontato)}</div>
-        <div class="savings-inline">\u2714 Risparmi &euro; ${fmt(risparmio)}</div>
+        ${p.hide_listino ? '' : `<div class="savings-inline">\u2714 Risparmi &euro; ${fmt(risparmio)}</div>`}
       </div>
     </div>
 
